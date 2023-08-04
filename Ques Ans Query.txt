@@ -1,0 +1,33 @@
+Query Writing:
+Question:
+1.	Find customer name, flight cost, total tickets of a customer which was approved by man_phone last digit 15.
+2.	Find the available flights with lowest price.
+3.	Find the flight cost of an economy class with destination to cox bazar.
+4.	Find the flight wise total booked tickets.
+5.	Find the name of the customer who booked the maximum number of flights.
+6.	Find customer name and departure time of a flight with destination to dhaka.
+7.	Find the destination of lowest cost business class flight from departure dhaka.
+8.	Find the manager’s name who approved maximum flights.
+9.	Find all the customers who booked flight.
+10.	Find all flight details with maximum booked tickets.
+
+Answer:
+1.	select c.cs_name, f.flight_cost, t.total_ticket from CUSTOMER01 c, flight f, tickets t, order_tickets ot, booking b where c.cs_id=b.cs_phn and b.flight_id=f.flight_id and t.ticket_id=ot.ticket_id and ot.flight_id=f.flight_id and f.man_phone=1715936615;
+
+2.	select * from flight where flight_cost=(select min(flight_cost) from flight);
+
+3.	select flight_cost from flight where flight_class='Economy' and destination='cox bazar';
+
+4.	select f.flight_id, sum(t.total_ticket) from flight f, tickets t, order_tickets ot where t.ticket_id=ot.ticket_id and ot.flight_id=f.flight_id group by f.flight_id;
+
+5.	select cs_name from customer01 where cs_id in (select c.cs_id from customer01 c, flight f, booking b where c.cs_id=b.cs_id and b.flight_id=f.flight_id group by c.cs_id having count(c.cs_id) in (select max(count(c.cs_id)) from customer01 c, flight f, booking b where c.cs_id=b.cs_id and b.flight_id=f.flight_id group by c.cs_id));
+
+6.	select c.cs_name, f.departure_time from customer01 c, flight f, booking b where c.cs_id=b.cs_id and b.flight_id=f.flight_id and destination='cox bazar';
+
+7.	select destination from flight where flight_class='Economy' and flight_cost in (select min(flight_cost) from flight);
+
+8.	select man_name from manager3 where man_id in (select m.man_id from manager3 m, flight f where m.man_id=f.man_id group by m.man_id having count(m.man_id) in (select max(count(m.man_id)) from manager3 m, flight f where m.man_id=f.man_id group by m.man_id));
+
+9.	select c.cs_name, c.cs_email from customer01 c, tickets t where c.cs_id=t.cs_id and ticket_status='booked';
+
+10.	select * from flight where flight_id in (select f.flight_id from flight f, tickets t, order_ticket ot where t.ticket_id=ot.ticket_id and ot.flight_id=f.flight_id and ticket_status='booked'group by f.flight_id having sum(t.total_ticket) in (select max(sum(t.total_ticket)) from flight f, tickets t, order_ticket ot where t.ticket_id=ot.ticket_id and ot.flight_id=f.flight_id and ticket_status='booked' group by f.flight_id));

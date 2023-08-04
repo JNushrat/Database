@@ -1,0 +1,121 @@
+MANAGER TABLE:
+
+CREATE TABLE manager2( 
+man_phone number(20) PRIMARY KEY,
+man_name varchar2(20),
+man_pass varchar2(20),
+man_email varchar2(50),
+man_id number(10)
+);
+CREATE SEQUENCE mgr_seq START WITH 1;
+INSERT INTO manager2 VALUES('01715936614', 'Mumu', 'Mumu999', 'mumu@gmail.com',  mgr_seq.nextval); 
+INSERT INTO manager2 VALUES('01715936615', 'Nushrat', 'Nush1234', 'nush@email.com', mgr_seq.nextval);
+INSERT INTO manager2 VALUES('01715936616', 'Kathy',  'Kathy299', 'kathy@email.com',  mgr_seq.nextval);  
+SELECT * FROM manager2;
+---------------------------------------------------------------------------------------------------------------------
+MANAGER TABLE UPDATED:
+
+CREATE TABLE manager3( 
+man_phone number(20),
+man_name varchar2(20),
+man_pass varchar2(20),
+man_email varchar2(50),
+man_id number(10),
+CONSTRAINT man_pk PRIMARY KEY(man_phone));
+
+CREATE SEQUENCE man_id_seq increment by 1 START WITH 1 nocache nocycle;
+INSERT INTO manager3 VALUES('01715936614', 'Mumu', 'Mumu999', 'mumu@gmail.com',  man_id_seq.nextval); 
+INSERT INTO manager3 VALUES('01715936615', 'Nushrat', 'Nush1234', 'nush@email.com', man_id_seq.nextval);
+INSERT INTO manager3 VALUES('01715936616', 'Kathy',  'Kathy299', 'kathy@email.com',  man_id_seq.nextval); 
+SELECT * FROM manager3;
+-----------------------------------------------------------------------------------------------------------------------------
+CUSTOMER TABLE:
+
+CREATE TABLE CUSTOMER01(
+cs_phn number(10) primary key,
+cs_name varchar2(20),
+cs_pass varchar2(20),
+cs_email varchar2(30),
+cs_id number(10),
+man_phone number(20),
+foreign key (man_phone) references manager3 (man_phone));
+
+CREATE SEQUENCE cs_id_seq increment by 1 START WITH 1 nocache nocycle;
+
+INSERT INTO CUSTOMER01 VALUES ('01754482481', 'Ayat', 'coolman', 'ayat@yahoo.com', cs_id_seq.nextval,1715936614);
+INSERT INTO CUSTOMER01 VALUES ('01954483842', 'Nafis', 'sawroop', 'nafis@gmail.com', cs_id_seq.nextval, 1715936615);
+INSERT INTO CUSTOMER01 VALUES ('01791522500', 'Gourob', 'adhikary','gourob@yahoo.com', cs_id_seq.NEXTVAL, 1715936614);
+INSERT INTO CUSTOMER01 VALUES ('01853381234', 'Bin', 'Bini', 'b18@yahoo.com', cs_id_seq.NEXTVAL, 1715936616);
+
+select * from CUSTOMER01;
+
+----------------------------------------------------------------------------------------------------------------------------------
+FLIGHT TABLE:
+
+CREATE TABLE FLIGHT (flight_id number (10) primary key, 
+departure varchar2(20), 
+destination varchar2(20), 
+departure_time date, arrival_time date, flight_cost number (10,2), flight_class varchar2(10), 
+man_phone number (20), 
+foreign key (man_phone) references manager2 (man_phone));
+
+CREATE SEQUENCE flight_id_seq increment by 1 start with 1 nocache nocycle;
+INSERT INTO FLIGHT VALUES (flight_id_seq.NEXTVAL, 'dhaka', 'cox bazar', to_date ('5-aug-23 10:00 a.m.', 'dd-mon-yy hh:mi a.m.'), to_date ('5-aug-23 11:30 a.m.', 'dd-mon-yy hh:mi a.m.'), 7000, 'Economy',01715936614);
+INSERT INTO FLIGHT VALUES (flight_id_seq.NEXTVAL, 'cox bazar', 'dhaka', to_date ('5-aug-23 12:00 p.m.', 'dd-mon-yy hh:mi p.m.'), to_date ('5-aug-23 12:30 p.m.', 'dd-mon-yy hh:mi p.m.'), 7000, 'Economy',01715936614);
+INSERT INTO FLIGHT VALUES (flight_id_seq.NEXTVAL, 'dhaka', 'cox bazar', to_date ('5-aug-23 10:00 a.m.', 'dd-mon-yy hh:mi a.m.'), to_date ('5-aug-23 11:30 a.m.', 'dd-mon-yy hh:mi a.m.'), 7000, 'Economy',01715936614);
+INSERT INTO FLIGHT VALUES (flight_id_seq.NEXTVAL, 'cox bazar', 'dhaka', to_date ('5-aug-23 12:00 p.m.', 'dd-mon-yy hh:mi p.m.'), to_date ('5-aug-23 12:30 p.m.', 'dd-mon-yy hh:mi p.m.'), 7000, 'Economy',1715936615);
+INSERT INTO FLIGHT VALUES (flight_id_seq.NEXTVAL, 'sylhet', 'dhaka', to_date ('6-sep-23 9:00 p.m.', 'dd-mon-yy hh:mi p.m.'), to_date ('6-sep-23 10:00 p.m.', 'dd-mon-yy hh:mi p.m.'), 7000, 'Economy',1715936616);
+
+select * from FLIGHT
+------------------------------------------------------------------------------------------------------------------------------------------------------------
+BOOKING TABLE:
+
+create table BOOKING (
+booking_id number (10) primary key, cs_phn number(10) , flight_id number (10), 
+foreign key (cs_phn) references CUSTOMER01 (cs_phn), 
+foreign key (flight_id) references FLIGHT (flight_id));
+
+create sequence booking_id_seq increment by 1 start with 1 nocache nocycle;
+insert into BOOKING values (booking_id_seq.NEXTVAL,01754482481,3);
+insert into BOOKING values (booking_id_seq.NEXTVAL,01954483842,4);
+insert into BOOKING values (booking_id_seq.NEXTVAL,01853381234,4);
+insert into BOOKING values (booking_id_seq.NEXTVAL,01791522500,13);
+insert into BOOKING values (booking_id_seq.NEXTVAL,01954483842,5);
+
+select * from BOOKING; 
+----------------------------------------------------------------------------------------------------------------------------------------------------
+TICKETS TABLE:
+
+create table TICKETS (ticket_id number(10) primary key, 
+total_ticket number (38), ticket_status varchar2(10), 
+cs_phn number (10), 
+foreign key(cs_phn) references CUSTOMER01 (cs_phn));
+
+create sequence ticket_id_seq increment by 1 start with 1 nocache nocycle;
+
+insert into TICKETS values (ticket_id_seq.NEXTVAL, 1, 'booked', 01754482481);
+insert into TICKETS values (ticket_id_seq.NEXTVAL, 13, 'available', 01754482481);
+insert into TICKETS values (ticket_id_seq.NEXTVAL, 1, 'booked', 01954483842);
+insert into TICKETS values (ticket_id_seq.NEXTVAL, 1, 'available', 01853381234);
+insert into TICKETS values (ticket_id_seq.NEXTVAL, 1, 'booked', 01853381234);
+
+select * from TICKETS;
+-----------------------------------------------------------------------------------------------------------------------------
+ORDER TABLE:
+
+create table ORDER_TICKETS(order_id number (10) primary key, 
+ticket_id number (10), flight_id number (10), 
+foreign key(ticket_id) references TICKETS(ticket_id), 
+foreign key(flight_id) references FLIGHT (flight_id));
+
+create sequence order_id_seq increment by 1 start with 1 nocache nocycle;
+
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,4,5);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,5,3);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,6,4);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,7,13);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,3,14);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,3,10);
+insert into ORDER_TICKETS values (order_id_seq.NEXTVAL,4,10);
+
+select * from ORDER_TICKETS;
