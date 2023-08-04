@@ -1,0 +1,42 @@
+<?php
+
+// Connects to the XE service (i.e. database) on the "localhost" machine
+$connection = oci_connect('webuser', 'webuser12', 'localhost/XE') or die (oci_error());
+if (!$connection) {
+  echo "Sorry.";
+}
+else{
+	echo "Successful";
+}
+//close the connection
+oci_close($connection);
+
+
+
+function signup($phonenumber,$name,$pass,$email,$cpassword){
+        $connection = getconnection();
+		$sql = "insert into public (phonenumber,name,pass,email,cpassword) values ('$phonenumber', '$name', '$pass','$email','$cpassword')";
+		
+        if(mysqli_query($connection, $sql)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+	
+function signin($phonenumber,$name, $pass ){
+        //$connection = getconnection();
+		$sql = "select * from public where phonenumber='{$phonenumber}' and name = '{$name}' and pass='{$pass}'";
+		$res= mysqli_query($sql);
+		$count = mysqli_num_rows($res);
+
+        if($count > 0)
+		{
+            return true;
+        }
+		else
+		{
+            return false;
+        }
+    }
+?>

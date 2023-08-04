@@ -1,0 +1,17 @@
+<?php
+
+$username = 'webuser';
+$password = 'webuser12';
+$connection_string='//localhost/XE';
+#$database = "projectrazerbd";
+$con = oci_connect($username, $password,$connection_string);
+
+ if (!$con) {
+      $e = oci_error();
+      trigger_error(htmlentities($e['message'], ENT_QUOTES), E_USER_ERROR);
+    }
+#if ($con->connect_error) {
+   # die("Connection failed: " . $con->connect_error);
+    /*exit();*/
+ 
+?>
